@@ -1,0 +1,132 @@
+# MCP : Model Context Protocol Guide
+
+A comprehensive overview and resource guide based on the **CampusX MCP Trilogy** video series by Nitish. This repository synthesizes the concepts, architecture, and practical implementations of Anthropic's **Model Context Protocol (MCP)**.
+
+---
+
+## 📌 Table of Contents
+- [Overview](#overview)
+- [What is Model Context Protocol (MCP)?](#what-is-model-context-protocol-mcp)
+- [Playlist Structure](#playlist-structure)
+  - [Trailer: Automated AI Newsletter Demo](#trailer-automated-ai-newsletter-demo)
+  - [Part 1: The Why (Motivation & Problems Solved)](#part-1-the-why-motivation--problems-solved)
+  - [Part 2: The What (Architecture & Components)](#part-2-the-what-architecture--components)
+  - [Part 3: The How (Lifecycle & Hands-on Implementation)](#part-3-the-how-lifecycle--hands-on-implementation)
+- [Key Architectural Components](#key-architectural-components)
+- [Getting Started & Configuration](#getting-started--configuration)
+- [Resources](#resources)
+
+---
+
+## 🍿 Overview
+
+The **MCP Trilogy** playlist addresses the fast-paced nature of AI advancements and demonstrates how MCP standardizes the way Large Language Models (LLMs) connect with external tools, local files, and third-party APIs seamlessly without writing custom, fragmented integration scripts.
+
+---
+
+## 💡 What is Model Context Protocol (MCP)?
+
+Model Context Protocol (MCP) is an open standard developed by Anthropic. It allows AI applications (MCP Hosts/Clients) to securely interact with data sources and execution tools (MCP Servers) through a unified client-server interface.
+
+```
++-------------------------------------------------------------+
+|                        MCP Host                             |
+|                 (e.g., Claude Desktop)                      |
+|                                                             |
+|   +-----------------------------------------------------+   |
+|   |                     MCP Client                      |   |
+|   +--------------------------+--------------------------+   |
++------------------------------|------------------------------+
+                               |
+                   Protocol (JSON-RPC / Transports)
+                               |
+        +----------------------+----------------------+
+        |                                             |
++-------v-------+                             +-------v-------+
+|  MCP Server   |                             |  MCP Server   |
+| (Google Drive)|                             |   (GitHub)    |
++---------------+                             +---------------+
+```
+
+---
+
+## 📺 Playlist Structure
+
+### Trailer: Automated AI Newsletter Demo
+* **Link:** [Watch Video](https://www.youtube.com/watch?v=3_TN1i3MTEU)
+* **Highlights:**
+  * Demonstrates a practical end-to-end automation of an AI newsletter using Claude Desktop and MCP.
+  * **Research Phase:** Scrapes and queries Google Drive, arXiv, Product Hunt, GitHub, and Twitter.
+  * **Drafting Phase:** Generates structured Markdown based on target newsletter templates.
+  * **Designing Phase:** Converts Markdown to production-ready HTML email templates.
+
+### Part 1: The Why (Motivation & Problems Solved)
+* **Link:** [Watch Video](https://www.youtube.com/watch?v=Zmy439spZB4)
+* **Highlights:**
+  * Analyzes the pain points of custom $N \times M$ API integrations for LLMs.
+  * Explains how MCP reduces complexity to an $N + M$ problem by providing a standard interface.
+  * Contextualizes data isolation, security, and context window management.
+
+### Part 2: The What (Architecture & Components)
+* **Link:** [Watch Video](https://www.youtube.com/watch?v=nQa31xdXbGk)
+* **Highlights:**
+  * Deep dive into **Hosts**, **Clients**, and **Servers**.
+  * Explains **Resources** (data reading), **Tools** (executing actions), and **Prompts** (pre-configured templates).
+  * Covers transport layers (stdio, SSE).
+
+### Part 3: The How (Lifecycle & Hands-on Implementation)
+* **Link:** [Watch Video](https://www.youtube.com/watch?v=sBHeMcxupmE)
+* **Highlights:**
+  * Step-by-step lifecycle of an MCP session (Initialization, Capability Negotiation, Execution).
+  * Building custom MCP servers using Python / TypeScript SDKs.
+  * Registering servers in local environments (e.g., `claude_desktop_config.json`).
+
+---
+
+## 🏗 Key Architectural Components
+
+1. **MCP Host:** The primary user-facing application hosting the LLM session (e.g., Claude Desktop, IDE extensions).
+2. **MCP Client:** Manages 1:1 connections with individual MCP servers, maintaining request/response lifecycles.
+3. **MCP Server:** Lightweight executable exposing:
+   * **Tools:** Functions the model can invoke (e.g., `search_github_repos`, `send_email`).
+   * **Resources:** Contextual data sources (e.g., `file://`, `sqlite://`).
+   * **Prompts:** Pre-written prompts for user interactions.
+
+---
+
+## ⚙️ Getting Started & Configuration
+
+To connect MCP servers to Claude Desktop, edit your local `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<YOUR_TOKEN_HERE>"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/path/to/allowed/directory"
+      ]
+    }
+  }
+}
+```
+
+---
+
+## 🔗 Resources
+
+* 📺 **Playlist:** [CampusX MCP Trilogy Playlist](https://www.youtube.com/playlist?list=PLKnIA16_Rmva_oZ9F4ayUu9qcWgF7Fyc0)
+* 📖 **Official MCP Documentation:** [modelcontextprotocol.io](https://modelcontextprotocol.io)
+* 🎓 **CampusX Channel:** [YouTube Channel](https://www.youtube.com/@CampusX-official)
